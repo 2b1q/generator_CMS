@@ -42,8 +42,11 @@ const generator = (function(){
 })();
 
 let gen = generator.getInstance();
-console.log('Generate new records')
-let len = 10000;
-let block = gen.newBlock(len);
-console.log(block.length);
-console.log(block[len-1]);
+
+// console.log('Generate new records')
+// let len = 10000;
+// let block = gen.newBlock(len);
+// console.log(block.length);
+// console.log(block[len-1]);
+
+module.exports.generator = gen;
