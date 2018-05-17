@@ -8,8 +8,19 @@ const config        = require('../config/config'),
 
 // AddRecords controller
 async function AddRecords(req, res) {
-  if(check_module.auth(req.query.api_key, res))
-    res.json({ auth: "OK", api: 'AddRecords' })
+  if(check_module.auth(req.query.api_key, res)) {
+    let size = req.body.size;
+    if(!size || typeof size !== 'number') res.json({ auth: "OK", error: "unable to pass size parameter" })
+    else {
+      try {
+        res.json({ auth: "OK", api: 'AddRecords', msg: await recordsmodel.add(size) }); // send JSON response after generating records
+        recordsmodel.load(); // push data
+      }catch(e){
+        res.status(500)
+        res.json({ auth: "OK", api: 'AddRecords', msg: e })
+      }
+    }
+  }
 }
 
 // GetRecords controller
