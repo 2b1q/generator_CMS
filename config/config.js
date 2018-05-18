@@ -5,6 +5,10 @@ config.server = {
   ip: (process.env.NODE_ENV == 'PROD') ? '95.213.165.61' : '127.0.0.1'
 }
 
+// cluster config
+// config.workers = (process.env.NODE_ENV == 'PROD') ? 4 : 2;
+config.workers = 4;
+
 // REST API options
 config.rest = {
 	apiKeys: [ 'B@NKEX','t0kEn' ],
@@ -14,12 +18,16 @@ config.rest = {
 /* run mongo in docker
   1. docker pull mongo (first run)
   2. docker run --name mongo-generator -p 127.0.0.1:27017:27017 --rm mongo
+
+  check data:
+  1. docker exec -ti mongo-generator mongo generator
+  2. db.recordmodels.count({})
 */
 config.store = {
   mongo: {
-    uri: 'mongodb://127.0.0.1:27017/generator',
+    uri: 'mongodb://localhost:27017',
+    db:  'generator',
     options: {
-      // useMongoClient: true,
       autoIndex: process.env.NODE_ENV !== 'PROD', // Don't build indexes in PROD
       poolSize: 2 // количество подключений в пуле
     }

@@ -9,12 +9,13 @@ const config        = require('../config/config'),
 // AddRecords controller
 async function AddRecords(req, res) {
   if(check_module.auth(req.query.api_key, res)) {
-    let size = req.body.size;
+    let size = req.body.size
     if(!size || typeof size !== 'number') res.json({ auth: "OK", error: "unable to pass size parameter" })
     else {
       try {
-        res.json({ auth: "OK", api: 'AddRecords', msg: await recordsmodel.add(size) }); // send JSON response after generating records
-        recordsmodel.load(); // push data
+        let cnt = await recordsmodel.add(size);
+        res.json({ auth: "OK", api: 'AddRecords', msg: `Loading ${cnt} records` }); // first send response then generate records
+        recordsmodel.load(size); // push data
       }catch(e){
         res.status(500)
         res.json({ auth: "OK", api: 'AddRecords', msg: e })
@@ -33,7 +34,12 @@ async function GetRecords(req, res) {
 // Delete All records controller
 async function DeleteRecords(req, res) {
   if(check_module.auth(req.query.api_key, res))
-    res.json({ auth: 'OK', msg: `Delete records`})
+  try {
+    res.json({ auth: 'OK', msg: `Delete records ${await recordsmodel.del()}`})
+  } catch (e) {
+    res.status(500)
+    res.json({ auth: "OK", api: 'DelRecords', msg: e })
+  }
 }
 
 // check AUTH (API_KEY) module with closures
