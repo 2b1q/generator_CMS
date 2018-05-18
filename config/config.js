@@ -6,8 +6,8 @@ config.server = {
 }
 
 // cluster config
-// config.workers = (process.env.NODE_ENV == 'PROD') ? 4 : 2;
-config.workers = 4;
+config.workers = (process.env.NODE_ENV == 'PROD') ? 4 : 2;
+// config.workers = 2;
 
 // REST API options
 config.rest = {

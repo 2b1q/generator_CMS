@@ -22,9 +22,9 @@ mongo((db) => {
 const records_module = (function(){
   let arr             = [],       // flat temp array with records
       chunks          = [],       // 2D array
-      chunk_size      = 10000,    // one chunk size
+      chunk_size      = 1000,    // one chunk size
       limit_size      = 5000000,  // max amount of records
-      insert_timeout  = 1000;     // 1000 ms - timeout between each insertMany(chunk_size records)
+      insert_timeout  = 100;      // timeout (ms) between each insertMany(chunk_size records)
 
   // private functions
   function add_records(cnt) {
