@@ -9,20 +9,17 @@ const url = config.store.mongo.uri, // Connection URL
 
 
 MongoClient.connect(url, conProp, function(e, client) {
-    if(e) {
-        console.log(e)
-        process.exit(0)
-      }
-       db = client.db(dbName);
-       callback(db)
-       // client.close();
-  });
+  if(e) {
+    console.error(`${config.color.white}${e}
 
-
-module.exports = function(cb){
-  if(typeof db != 'undefined' ){
-    cb(db)
-  }else{
-    callback = cb
+Try to start MongoDB:
+  ${config.color.green}$docker run --name mongo-generator -p 127.0.0.1:27017:27017 --rm mongo`);
+  } else {
+    db = client.db(dbName);
+    callback(db)
   }
-}
+  // client.close();
+});
+
+
+module.exports = cb =>  typeof db !== 'undefined'? cb(db) : callback = cb

@@ -22,9 +22,11 @@ mongo((db) => {
 const records_module = (function(){
   let arr             = [],       // flat temp array with records
       chunks          = [],       // 2D array
-      chunk_size      = 1000,    // one chunk size
+      chunk_size      = 10000,    // one chunk size
       limit_size      = 5000000,  // max amount of records
-      insert_timeout  = 100;      // timeout (ms) between each insertMany(chunk_size records)
+      insert_timeout  = 200;      // timeout (ms) between each insertMany(chunk_size records)
+
+  let json_response = {}; // response object
 
   // private functions
   function add_records(cnt) {
@@ -85,27 +87,57 @@ const records_module = (function(){
     console.log(`[ ${config.color.green}Done${config.color.white} ]`)
   }
 
-  function del_records() {
-    return new Promise(function(resolve, reject) {
-      recordModel.remove({}, function(err) {
-        if(err) reject(err.message);
-        console.log(`${config.color.white}Remove collection => ${config.color.green} [ Done ]`);
-        resolve('done');
-      });
-    });
 
+  let queryoptions = (p, s) => {
+    let page = (isNaN(p)) ? 1 : Number (p).toFixed(); // default page = 1
+    let size = (isNaN(s)) ? 20 : Number (s).toFixed(); // default size = 20 (if size 'undefined')
+    page = (page >= 1) ? page : 1;
+    size = (size >= 10) ? size : 10;
+    let options = {
+      limit: parseInt(size),
+      skip: (page*size)-size,
+      page: page
+    }
+      return options;
   }
 
-  function get_records() {
-
+  function get_records(pg,sort) {
+    return new Promise(function(resolve, reject) {
+      records.count({}, (error, response)=>{
+        if(error) reject(error);
+        else {
+          if(response>0) {
+            let pages = Math.ceil(response / 50);
+            let options = queryoptions(pg, 50, sort);
+            records.find({})
+              .limit(options.limit)
+              .skip(options.skip)
+              .sort(sort)
+              .toArray((err,docs) =>{
+                json_response = {
+                  pages: pages,
+                  records_cnt: response,
+                  records: docs,
+                  page: options.page,
+                  limit: options.limit
+                }
+                // console.log(json_response);
+                resolve(json_response)
+              })
+          } else {
+            resolve(response) // 0 records
+          }
+        }
+      })
+    });
   }
 
   // public interfaces
   return {
     add:  cnt  => add_records(cnt),
     load: cnt  => load_data(cnt),
-    del:  ()   => del_records(),
-    get:  ()   => get_records()
+    del:  ()   => records.drop(),
+    get:  (page,sort)   => get_records(page,sort)
   }
 })();
 

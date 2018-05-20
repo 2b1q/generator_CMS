@@ -18,7 +18,7 @@ async function AddRecords(req, res) {
         recordsmodel.load(size); // push data
       }catch(e){
         res.status(500)
-        res.json({ auth: "OK", api: 'AddRecords', msg: e })
+        res.json({ auth: "OK", api: 'AddRecords', error_msg: e })
       }
     }
   }
@@ -26,19 +26,36 @@ async function AddRecords(req, res) {
 
 // GetRecords controller
 async function GetRecords(req, res) {
-  res.json({ api: 'GetRecords' })
-  // res.json(await recordsmodel.get(check_module.getid()))
+  let page = req.query.page;
+  let sort = req.query.sort || 'a';
+  switch(sort) {
+    case 'a':
+      sort = { a: 1 }
+      break;
+    case 'b':
+      sort = { b: 1 }
+      break;
+    case 'c':
+      sort = { c: 1 }
+      break;
+  }
+  // res.json({ api: 'GetRecords' })
+  try {
+    res.json(await recordsmodel.get(page, sort))
+  } catch (e) {
+    res.status(500)
+    res.json({ api: 'GetRecords', error_msg: e })
+  }
 }
-
 
 // Delete All records controller
 async function DeleteRecords(req, res) {
   if(check_module.auth(req.query.api_key, res))
   try {
-    res.json({ auth: 'OK', msg: `Delete records ${await recordsmodel.del()}`})
+    res.json({ auth: 'OK', msg: `${await recordsmodel.del()}`})
   } catch (e) {
-    res.status(500)
-    res.json({ auth: "OK", api: 'DelRecords', msg: e })
+    res.status(404) // Not found (no records)
+    res.json({ auth: "OK", api: 'DelRecords', error_msg: e })
   }
 }
 

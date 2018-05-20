@@ -21,7 +21,7 @@ config.rest = {
 
   check data:
   1. docker exec -ti mongo-generator mongo generator
-  2. db.recordmodels.count({})
+  2. db.records.count({})
 */
 config.store = {
   mongo: {

@@ -17,7 +17,6 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'))
    .set('view engine', 'pug');
 
-// uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'))
    .use(bodyParser.json())
@@ -39,7 +38,6 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
- res.locals.success = req.flash('success');
  // set locals, only providing error in development
  res.locals.message = err.message;
  res.locals.error = req.app.get('env') === 'development' ? err : {};
