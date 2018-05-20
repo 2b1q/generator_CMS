@@ -2,8 +2,7 @@
   - add/delete/get records
   - chunk (chunk_size records) loader using insertMany
 */
-const //recordModel  = require('./recordModel'),
-      generator    = require('../tools/generator').generator,
+const generator    = require('../tools/generator').generator,
       _            = require('lodash'), // lodash chunks
       config       = require('../config/config');
       mongo        = require('../tools/initDB'); // mongodb client

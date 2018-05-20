@@ -1,5 +1,15 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  .container
+    .hidden(id='dataset')
+      .jumbotron
+        .container
+          .row(id='header')
+            .col-sm-3
+              Strong column 'A'
+            .col-sm-3
+              Strong column 'B'
+            .col-sm-3
+              Strong column 'C'
+            .col-sm-3(id='recs')
