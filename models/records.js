@@ -14,6 +14,17 @@ mongo((db) => {
   records.count({}, (err,resp)=>{
     console.log(`Total docs in collection 'records': ${resp}`);
   })
+
+  records.createIndex(
+      { a : 1 }, function(err, result) {
+  });
+  records.createIndex(
+      { b : 1 }, function(err, result) {
+  });
+  records.createIndex(
+      { c : 1 }, function(err, result) {
+  });
+
 })
 
 // console.log(generator.newBlock(10));
@@ -108,11 +119,12 @@ const records_module = (function(){
           if(response>0) {
             let pages = Math.ceil(response / 50);
             let options = queryoptions(pg, 50, sort);
-            records.find({})
+            records.find({},{allowDiskUse: true})
               .limit(options.limit)
               .skip(options.skip)
               .sort(sort)
               .toArray((err,docs) =>{
+                if(err)console.log(err);
                 json_response = {
                   pages: pages,
                   records_cnt: response,
@@ -120,7 +132,7 @@ const records_module = (function(){
                   page: options.page,
                   limit: options.limit
                 }
-                // console.log(json_response);
+                console.log(json_response);
                 resolve(json_response)
               })
           } else {
