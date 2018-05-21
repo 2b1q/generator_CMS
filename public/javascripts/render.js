@@ -4,6 +4,7 @@ $(function () {
   var dataset = $('#dataset');
   var btn_reload = '<button type="button" id="reload" class="btn btn-default">Обновить страницу</button><br>'
   var btn_drop = '<button type="button" id="drop" class="btn btn-danger">Удалить все записи</button>'
+  var btn_new_recs = '<button type="button" id="create" class="btn btn-primary">Создать 10^6 записей</button>'
 
   if(!rendered) {
     sort(1,'a')
@@ -77,7 +78,8 @@ $(function () {
       dataset.removeClass('hidden').addClass('container');
       dataset.find('.jumbotron')
       .html('<div class="alert alert-danger"><strong>404</strong> Записи не найдены</div>')
-      .append('<button type="button" id="create" class="btn btn-primary">Создать 10^6 записей</button>');
+      .append(btn_new_recs);
+      // new recs handler
       $('#create').click(function(e){
         createRecords();
       })
@@ -90,11 +92,17 @@ $(function () {
         .html('Записей в БД: '+data.records_cnt+'<br>Страниц: '+data.pages+'<br>Записей на странице: '+data.limit+'<br>Текущая страница: '+data.page)
         .append(btn_reload)
         .append(btn_drop)
+        .append(btn_new_recs)
       $('#reload').click(function(e){
           location.reload()
       })
       $('#drop').click(function(e){
         drop()
+      })
+
+      // new recs handler
+      $('#create').click(function(e){
+        createRecords();
       })
 
       // show paginator
@@ -124,6 +132,7 @@ $(function () {
   $('#c').click(function(e){
     sort($('.active').text(),'c')
   })
+
 
 
   /*
